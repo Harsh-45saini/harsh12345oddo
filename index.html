@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diet Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .instructions {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .instructions:hover {
+            background-color: #f0f0f0;
+        }
+
+        .highlight {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        #showInstructions {
+            display: none;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #instructions {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Diet Management System</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="add-food.html">Add Food</a></li>
+                <li><a href="view-foods.html">View Foods</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="register.html">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Welcome to the Diet Management System</h2>
+        <p>Track your daily food intake and manage your diet effectively.</p>
+        
+        <button id="showInstructions">Show Instructions</button>
+        
+        <div id="instructions" class="instructions">
+            <h3>How to Use the Diet Management System</h3>
+            <p>Welcome to the <span class="highlight">Diet Management System</span>. This application helps you to manage your daily food intake and track your dietary habits. Here's how you can get started:</p>
+            <ol>
+                <li><span class="highlight">Register:</span> Create an account to start tracking your food intake.</li>
+                <li><span class="highlight">Login:</span> Access your account to view and manage your food entries.</li>
+                <li><span class="highlight">Add Food:</span> Enter the details of the food you consume, including calories, protein, fat, and carbohydrates.</li>
+                <li><span class="highlight">View Foods:</span> Check your logged food entries and see your total calorie intake.</li>
+                <li><span class="highlight">Edit or Delete:</span> Make changes to your food entries or remove them as needed.</li>
+            </ol>
+            <p>Start managing your diet today for a healthier lifestyle!</p>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Diet Management System</p>
+    </footer>
+    <script>
+        document.getElementById('showInstructions').style.display = 'block';
+
+        document.getElementById('showInstructions').addEventListener('click', function() {
+            let instructions = document.getElementById('instructions');
+            if (instructions.style.display === 'none') {
+                instructions.style.display = 'block';
+                this.textContent = 'Hide Instructions';
+            } else {
+                instructions.style.display = 'none';
+                this.textContent = 'Show Instructions';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Food Entry</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Diet Management System</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="add-food.html">Add Food</a></li>
+                <li><a href="view-foods.html">View Foods</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="register.html">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Add Food Entry</h2>
+        <form id="foodForm">
+            <label for="foodName">Food Name:</label>
+            <input type="text" id="foodName" name="foodName" required>
+            
+            <label for="calories">Calories:</label>
+            <input type="number" id="calories" name="calories" required>
+            
+            <label for="protein">Protein (g):</label>
+            <input type="number" id="protein" name="protein">
+            
+            <label for="fat">Fat (g):</label>
+            <input type="number" id="fat" name="fat">
+            
+            <label for="carbs">Carbohydrates (g):</label>
+            <input type="number" id="carbs" name="carbs">
+            
+            <button type="submit">Add Food</button>
+        </form>
+        <ul id="foodList"></ul>
+        <h3>Total Calories: <span id="totalCalories">0</span></h3>
+    </main>
+    <footer>
+        <p>&copy; 2024 Diet Management System</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            loadFoodEntries();
+            updateTotalCalories();
+        });
+
+        // Function to handle form submission
+        document.getElementById('foodForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            // Get form values
+            let foodName = document.getElementById('foodName').value;
+            let calories = parseInt(document.getElementById('calories').value) || 0;
+            let protein = parseInt(document.getElementById('protein').value) || 0;
+            let fat = parseInt(document.getElementById('fat').value) || 0;
+            let carbs = parseInt(document.getElementById('carbs').value) || 0;
+
+            // Construct food entry object
+            let foodEntry = {
+                id: Date.now(),
+                foodName: foodName,
+                calories: calories,
+                protein: protein,
+                fat: fat,
+                carbs: carbs
+            };
+
+            // Save to local storage
+            saveFoodEntry(foodEntry);
+
+            // Clear form fields
+            document.getElementById('foodName').value = '';
+            document.getElementById('calories').value = '';
+            document.getElementById('protein').value = '';
+            document.getElementById('fat').value = '';
+            document.getElementById('carbs').value = '';
+
+            // Add food entry to list
+            addFoodEntryToList(foodEntry);
+
+            // Update total calories
+            updateTotalCalories();
+        });
+
+        // Function to save food entry to local storage
+        function saveFoodEntry(foodEntry) {
+            let foodEntries = JSON.parse(localStorage.getItem('foodEntries')) || [];
+            foodEntries.push(foodEntry);
+            localStorage.setItem('foodEntries', JSON.stringify(foodEntries));
+        }
+
+        // Function to load food entries from local storage
+        function loadFoodEntries() {
+            let foodEntries = JSON.parse(localStorage.getItem('foodEntries')) || [];
+            foodEntries.forEach(addFoodEntryToList);
+        }
+
+        // Function to add food entry to list
+        function addFoodEntryToList(foodEntry) {
+            let foodList = document.getElementById('foodList');
+            let foodItem = document.createElement('li');
+            foodItem.setAttribute('data-id', foodEntry.id);
+            foodItem.innerHTML = `
+                <div>
+                    <strong>${foodEntry.foodName}</strong>
+                    <span>${foodEntry.calories} Calories</span>
+                </div>
+                <div>
+                    <button class="edit">Edit</button>
+                    <button class="delete">Delete</button>
+                </div>
+            `;
+            foodList.appendChild(foodItem);
+        }
+
+        // Function to update total calories
+        function updateTotalCalories() {
+            let totalCalories = 0;
+            document.querySelectorAll('#foodList li').forEach(function(item) {
+                let caloriesText = item.querySelector('span').innerText;
+                let calories = parseInt(caloriesText.split(' ')[0]);
+                totalCalories += calories;
+            });
+            document.getElementById('totalCalories').textContent = totalCalories;
+        }
+
+        // Event delegation for edit and delete buttons
+        document.getElementById('foodList').addEventListener('click', function(event) {
+            if (event.target.classList.contains('delete')) {
+                let foodItem = event.target.closest('li');
+                let foodId = foodItem.getAttribute('data-id');
+                foodItem.remove();
+                deleteFoodEntry(foodId);
+                updateTotalCalories();
+            } else if (event.target.classList.contains('edit')) {
+                let foodItem = event.target.closest('li');
+                let foodId = foodItem.getAttribute('data-id');
+                editFoodEntry(foodId);
+            }
+        });
+
+        // Function to delete food entry from local storage
+        function deleteFoodEntry(foodId) {
+            let foodEntries = JSON.parse(localStorage.getItem('foodEntries')) || [];
+            foodEntries = foodEntries.filter(entry => entry.id != foodId);
+            localStorage.setItem('foodEntries', JSON.stringify(foodEntries));
+        }
+
+        // Function to edit food entry
+        function editFoodEntry(foodId) {
+            let foodEntries = JSON.parse(localStorage.getItem('foodEntries')) || [];
+            let foodEntry = foodEntries.find(entry => entry.id == foodId);
+            if (foodEntry) {
+                document.getElementById('foodName').value = foodEntry.foodName;
+                document.getElementById('calories').value = foodEntry.calories;
+                document.getElementById('protein').value = foodEntry.protein;
+                document.getElementById('fat').value = foodEntry.fat;
+                document.getElementById('carbs').value = foodEntry.carbs;
+                
+                // Remove the entry from local storage
+                deleteFoodEntry(foodId);
+                
+                // Remove the entry from the list
+                document.querySelector(`li[data-id='${foodId}']`).remove();
+                
+                updateTotalCalories();
+            }
+        }
+    </script>
+</body>
+</html>
